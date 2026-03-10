@@ -1,0 +1,43 @@
+# Environments
+venv/
+env/
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Packages
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+bin/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+
+# Flutter/Dart
+.dart_tool/
+.packages
+build/
+.pub-cache/
+.pub/
+/android/app/src/main/gen/
+/android/build/
+/ios/Flutter/App.framework/
+/ios/Flutter/Flutter.framework/
+/ios/Pods/
+
+# Node/Next.js
+node_modules/
+.next/
+out/
+.vercel
