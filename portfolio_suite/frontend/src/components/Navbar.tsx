@@ -25,10 +25,10 @@ export default function Navbar() {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ${
           scrolled
-            ? "py-3 sm:py-4 backdrop-blur-2xl bg-black/70 border-b border-white/[0.04]"
-            : "py-5 sm:py-6"
+            ? "py-3 sm:py-4 bg-black/90 border-b border-white/[0.03]"
+            : "py-5 sm:py-6 bg-transparent"
         }`}
       >
         <div className="section-padding flex items-center justify-between">

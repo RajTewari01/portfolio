@@ -28,13 +28,13 @@ export default function HeroSection() {
       {/* Grid background */}
       <div className="hero-grid" />
 
-      {/* 3D Canvas — fixed center */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[45%] w-[min(70vw,550px)] h-[min(70vw,550px)] z-[1]">
+      {/* 3D Canvas — subtle accent, right side */}
+      <div className="absolute top-1/2 right-[8%] sm:right-[12%] md:right-[15%] -translate-y-1/2 w-[200px] h-[200px] sm:w-[260px] sm:h-[260px] md:w-[320px] md:h-[320px] z-[1] opacity-80">
         <ThreeCanvas />
       </div>
 
       {/* Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(99,102,241,0.07)_0%,transparent_60%)] pointer-events-none z-0" />
+      <div className="absolute top-1/2 right-[15%] -translate-y-1/2 w-[300px] h-[300px] bg-[radial-gradient(circle,rgba(99,102,241,0.04)_0%,transparent_60%)] pointer-events-none z-0" />
 
       {/* ── TOP: Status bar ───────────────────── */}
       <motion.div

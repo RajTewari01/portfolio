@@ -153,7 +153,7 @@ function MorphBlob() {
   });
 
   return (
-    <mesh ref={meshRef} scale={2.2}>
+    <mesh ref={meshRef} scale={1.6}>
       <icosahedronGeometry args={[1, 64]} />
       <shaderMaterial
         ref={materialRef}
