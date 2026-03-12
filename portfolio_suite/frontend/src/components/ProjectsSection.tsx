@@ -1,98 +1,124 @@
-"use client";
+import { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { ArrowUpRight } from "lucide-react";
+gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
   {
     id: "01",
-    title: "Spatial Tracker",
-    category: "AI / Computer Vision",
-    description: "Real-time spatial tracking engine with centimeter-level accuracy using PyTorch and OpenCV.",
-    tech: ["Python", "PyTorch", "OpenCV"],
-    link: "https://github.com/RajTewari01/spatial-tracker",
+    title: "Spatial Tracer",
+    type: "AI Vision Engine",
+    desc: "PyTorch & OpenCV based realtime spatial computing module achieving sub-centimeter point tracking accuracy at 60fps.",
+    link: "https://github.com/RajTewari01/spatial_tracer"
   },
   {
     id: "02",
-    title: "LeetCode Dashboard",
-    category: "Web / Dashboard",
-    description: "Dynamic algorithmic progress visualizer with live data through GitHub API integrations.",
-    tech: ["Next.js", "React", "API"],
-    link: "https://github.com/RajTewari01/LeetCode",
+    title: "Algorithm Dashboard",
+    type: "Data Visualizer",
+    desc: "React & Next.js dashboard hooked to Github & LeetCode APIs, providing a clean interface to view and track answered competitive programming problems.",
+    link: "https://github.com/RajTewari01/leetCode"
   },
   {
     id: "03",
-    title: "QR Engine",
-    category: "Tooling / Desktop",
-    description: "QR generation engine wrapped in a standalone executable binary with PyQt GUI.",
-    tech: ["Python", "PyQt5", "PyInstaller"],
-    link: "https://github.com/RajTewari01/QR_CODE_GENERATOR_WITH_EXE",
-  },
+    title: "QR Node Engine",
+    type: "Binary Executable",
+    desc: "A pure PyQt/Python desktop tooling software bundled into an isolated binary for high-fidelity vector QR generation.",
+    link: "https://github.com/RajTewari01/QR_CODE_GENERATOR_WITH_EXE"
+  }
 ];
 
 export default function ProjectsSection() {
-  return (
-    <section id="work" className="relative bg-black section-padding">
-      {/* Top separator */}
-      <div className="h-[1px] bg-white/[0.04]" />
+  const containerRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLHeadingElement>(null);
 
-      <div className="max-w-[1100px] mx-auto py-28 sm:py-36 md:py-44">
-        {/* Header */}
-        <div className="animate-in flex flex-col sm:flex-row sm:items-end justify-between mb-20 sm:mb-28">
-          <div>
-            <span className="text-[10px] sm:text-[11px] tracking-[0.4em] uppercase text-white/20 block mb-3 font-mono">
-              Selected Projects
-            </span>
-            <h2
-              className="text-4xl sm:text-5xl md:text-6xl font-black tracking-[-0.04em] uppercase gradient-text"
-              style={{ fontFamily: "'Syne', sans-serif" }}
-            >
-              Work
-            </h2>
+  useEffect(() => {
+    if (!headerRef.current) return;
+    const chars = headerRef.current.querySelectorAll(".type-char");
+    
+    gsap.fromTo(chars, 
+      { opacity: 0, filter: "blur(10px)", y: 20 },
+      {
+        opacity: 1,
+        filter: "blur(0px)",
+        y: 0,
+        duration: 0.8,
+        stagger: 0.05,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: headerRef.current,
+          start: "top 85%",
+        }
+      }
+    );
+  }, []);
+
+  return (
+    <section id="work" className="relative section-pad-y bg-transparent" ref={containerRef}>
+      <div className="section-pad-x">
+        
+        {/* Header Block */}
+        <div className="cinematic-reveal flex flex-col gap-8 mb-24 md:mb-32">
+          <div className="z-10">
+             <div className="flex items-center gap-3">
+               <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full shadow-[0_0_8px_rgba(99,102,241,0.8)]" />
+               <p className="font-mono text-[10px] tracking-[0.3em] uppercase text-white/50 drop-shadow-md">Selected Archives</p>
+             </div>
+             <h2 ref={headerRef} className="font-syne text-[11vw] sm:text-[9vw] lg:text-[7.5vw] font-black uppercase mt-4 tracking-[-0.08em] mix-blend-difference leading-none whitespace-nowrap drop-shadow-[0_10px_35px_rgba(0,0,0,0.8)] inline-block">
+               <span>Oper</span>
+               <span className="inline-flex text-white/95">
+                 {"ations.".split("").map((char, i) => (
+                   <span key={i} className="type-char opacity-0 inline-block filter blur-md">{char}</span>
+                 ))}
+               </span>
+             </h2>
           </div>
-          <span className="text-[10px] tracking-[0.3em] uppercase text-white/12 font-mono mt-3 sm:mt-0">
-            ({String(projects.length).padStart(2, "0")})
-          </span>
+          <div className="z-10 self-start md:self-end md:w-1/2 lg:w-5/12 max-w-lg">
+            <p className="text-sm md:text-base text-white/60 font-medium leading-relaxed drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)] md:text-right">
+              Engineering is the art of constraint. These systems represent the intersection of complex high-performance backends and ruthless minimalist frontends. Built to execute perfectly, every time.
+            </p>
+          </div>
         </div>
 
-        {/* Project list */}
-        {projects.map((project, index) => (
-          <a
-            key={project.id}
-            href={project.link}
-            target="_blank"
-            rel="noreferrer"
-            className="animate-in group block border-t border-white/[0.05]"
-            style={{ transitionDelay: `${index * 80}ms` }}
-          >
-            <div className="py-10 sm:py-14 md:py-16 flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-8 group-hover:translate-x-1 transition-transform duration-600 ease-out">
+        {/* Project List: Apple Editorial Style (Refined with shadow text) */}
+        <div className="w-full flex flex-col pt-10">
+          {projects.map((p, i) => (
+            <a 
+              key={p.id}
+              href={p.link}
+              target="_blank"
+              rel="noreferrer"
+              className="cinematic-reveal group relative grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center border-b border-white/5 py-16 hover:bg-white/[0.015] transition-colors duration-500 z-10"
+            >
+              {/* Subtle gradient hover highlight */}
+              <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-indigo-500 via-cyan-400 to-transparent scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]" />
 
-              <div className="flex items-start md:items-center gap-5 sm:gap-8 min-w-0">
-                <span className="text-[10px] text-white/12 font-mono pt-1.5 md:pt-0 shrink-0 w-5">{project.id}</span>
-                <div className="min-w-0">
-                  <h3
-                    className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-white/90 group-hover:text-[#6366f1] transition-colors duration-400"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
-                  >
-                    {project.title}
-                  </h3>
-                  <p className="text-[10px] sm:text-[11px] tracking-[0.2em] uppercase text-white/20 mt-1.5 font-mono">
-                    {project.category}
-                  </p>
-                </div>
+              <div className="col-span-12 md:col-span-1">
+                <span className="font-mono text-xs text-white/30 group-hover:text-indigo-400 transition-colors drop-shadow-md">{p.id}</span>
+              </div>
+              
+              <div className="col-span-12 md:col-span-6">
+                <h3 className="font-syne text-[8vw] sm:text-[6vw] md:text-[5vw] font-extrabold uppercase tracking-tighter text-white/90 group-hover:text-white transition-all duration-500 group-hover:translate-x-4 ease-out transform drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)] leading-[0.85]">
+                  {p.title}
+                </h3>
               </div>
 
-              <div className="flex items-center gap-6 md:gap-8 shrink-0 pl-10 md:pl-0">
-                <p className="text-white/30 text-[13px] max-w-[240px] hidden lg:block font-light leading-relaxed">
-                  {project.description}
+              <div className="col-span-12 md:col-span-4 flex flex-col gap-3">
+                <span className="text-[10px] tracking-[0.2em] font-mono text-indigo-400 uppercase drop-shadow-md">{p.type}</span>
+                <p className="text-sm text-white/60 font-medium leading-relaxed group-hover:text-white/80 transition-colors drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
+                  {p.desc}
                 </p>
-                <div className="w-10 h-10 rounded-full border border-white/[0.06] flex items-center justify-center group-hover:bg-white group-hover:text-black group-hover:border-white group-hover:rotate-45 transition-all duration-500">
-                  <ArrowUpRight className="w-4 h-4" />
+              </div>
+
+              <div className="col-span-12 md:col-span-1 flex justify-end">
+                <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-black group-hover:border-white transition-all duration-500 -rotate-45 group-hover:rotate-0 drop-shadow-xl shadow-inner bg-black/20 backdrop-blur-sm">
+                  <span className="font-syne font-bold text-xl">→</span>
                 </div>
               </div>
-            </div>
-          </a>
-        ))}
-        <div className="h-[1px] bg-white/[0.05]" />
+            </a>
+          ))}
+        </div>
+
       </div>
     </section>
   );

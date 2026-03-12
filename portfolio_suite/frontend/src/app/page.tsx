@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import dynamic from "next/dynamic";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -13,30 +14,37 @@ import ContactSection from "@/components/ContactSection";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Load 3D heavily optimized and entirely deferred to client
+const ThreeCanvas = dynamic(() => import("@/components/ThreeCanvas"), { ssr: false });
+
 export default function Home() {
   useEffect(() => {
-    // Lenis smooth scroll
+    // Premium Lenis smooth scroll engine
     const lenis = new Lenis({
-      duration: 1.4,
+      duration: 1.6,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      wheelMultiplier: 1.2,
     });
 
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
 
-    // Scroll-reveal for .animate-in elements
-    const els = document.querySelectorAll(".animate-in");
-    els.forEach((el) => {
+    // Global cinematic scroll-reveal class for brutalist elements
+    // Upgraded to Apple-premium blur reveal
+    const revealEls = document.querySelectorAll(".cinematic-reveal");
+    revealEls.forEach((el) => {
       gsap.fromTo(
         el,
-        { y: 60, opacity: 0 },
+        { y: 80, opacity: 0, filter: "blur(12px)", scale: 0.98 },
         {
           y: 0,
           opacity: 1,
-          duration: 1,
-          ease: "power3.out",
+          filter: "blur(0px)",
+          scale: 1,
+          duration: 1.6,
+          ease: "expo.out",
           scrollTrigger: {
             trigger: el,
             start: "top 85%",
@@ -54,8 +62,12 @@ export default function Home() {
 
   return (
     <>
+      {/* NATIVE 3D BACKGROUND - PERSISTS ACROSS ENTIRE PAGE SCROLL */}
+      <ThreeCanvas />
+
       <Navbar />
-      <main className="relative w-full bg-black">
+      
+      <main className="relative w-full z-10 font-sans">
         <HeroSection />
         <MarqueeBanner />
         <ProjectsSection />
