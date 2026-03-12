@@ -20,51 +20,53 @@ const skills = [
 
 export default function AboutSection() {
   return (
-    <section id="about" className="relative bg-black py-24 sm:py-32 md:py-40 section-padding">
-      <div className="max-w-[1200px] mx-auto">
+    <section id="about" className="relative bg-black section-padding">
+      <div className="h-[1px] bg-white/[0.04]" />
 
+      <div className="max-w-[1100px] mx-auto py-28 sm:py-36 md:py-44">
         {/* Header */}
-        <div className="animate-in mb-16 sm:mb-20">
-          <span className="text-[11px] tracking-[0.4em] uppercase text-white/25 block mb-4 font-mono">About</span>
+        <div className="animate-in mb-20 sm:mb-28">
+          <span className="text-[10px] sm:text-[11px] tracking-[0.4em] uppercase text-white/20 block mb-3 font-mono">About</span>
           <h2
-            className="text-4xl sm:text-6xl md:text-7xl font-black tracking-[-0.04em] uppercase gradient-text"
+            className="text-4xl sm:text-5xl md:text-6xl font-black tracking-[-0.04em] uppercase gradient-text"
             style={{ fontFamily: "'Syne', sans-serif" }}
           >
-            About.
+            About
           </h2>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-16">
+        {/* Two-column layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20">
 
-          {/* Left — Image (2 cols) */}
-          <div className="animate-in lg:col-span-2">
-            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-white/5">
+          {/* Image column */}
+          <div className="animate-in lg:col-span-5">
+            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-white/[0.04] mb-8">
               <Image src="/profile.jpg" alt="Biswadeep Tewari" fill className="object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               <div className="absolute bottom-5 left-5">
                 <p className="text-white/80 text-sm font-medium">MAKAUT University</p>
-                <p className="text-white/35 text-[11px] font-mono">West Bengal, India 🇮🇳</p>
+                <p className="text-white/30 text-[10px] font-mono mt-0.5">West Bengal, India 🇮🇳</p>
               </div>
             </div>
-            <p className="text-white/40 text-sm sm:text-base font-light leading-[1.8] mt-6">
+            <p className="text-white/35 text-sm font-light leading-[1.9]">
               I build at the intersection of
-              <span className="text-white/80"> engineering</span> and
-              <span className="text-white/80"> creativity</span>.
-              My motto: <span className="gradient-text-accent font-medium">build → ship → learn → repeat</span>.
+              <span className="text-white/70"> engineering</span> and
+              <span className="text-white/70"> creativity</span>.
+              From orchestrating LangChain agent systems to shipping Flutter apps — my motto:
+              <span className="gradient-text-accent font-medium"> build → ship → learn → repeat</span>.
             </p>
           </div>
 
-          {/* Right — Stats + Skills (3 cols) */}
-          <div className="lg:col-span-3">
+          {/* Stats + Skills column */}
+          <div className="lg:col-span-7">
             {/* Stats */}
-            <div className="animate-in grid grid-cols-3 gap-6 mb-12 pb-12 border-b border-white/5">
+            <div className="animate-in grid grid-cols-3 gap-6 sm:gap-8 mb-14 pb-14 border-b border-white/[0.04]">
               {stats.map((stat) => (
                 <div key={stat.label}>
-                  <p className="text-3xl sm:text-5xl font-black gradient-text-accent" style={{ fontFamily: "'Syne', sans-serif" }}>
+                  <p className="text-3xl sm:text-4xl md:text-5xl font-black gradient-text-accent" style={{ fontFamily: "'Syne', sans-serif" }}>
                     {stat.number}
                   </p>
-                  <p className="text-[10px] sm:text-[11px] tracking-[0.2em] uppercase text-white/25 mt-1 font-mono">
+                  <p className="text-[9px] sm:text-[10px] tracking-[0.2em] uppercase text-white/20 mt-1 font-mono">
                     {stat.label}
                   </p>
                 </div>
@@ -72,15 +74,15 @@ export default function AboutSection() {
             </div>
 
             {/* Skills */}
-            <div className="space-y-6">
+            <div className="space-y-7">
               {skills.map((skill, i) => (
-                <div key={skill.category} className="animate-in" style={{ transitionDelay: `${i * 60}ms` }}>
-                  <p className="text-[10px] sm:text-[11px] tracking-[0.3em] uppercase text-white/25 mb-2 font-mono">
+                <div key={skill.category} className="animate-in" style={{ transitionDelay: `${i * 50}ms` }}>
+                  <p className="text-[9px] sm:text-[10px] tracking-[0.3em] uppercase text-white/20 mb-2.5 font-mono">
                     {skill.category}
                   </p>
-                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                  <div className="flex flex-wrap gap-1.5">
                     {skill.items.map((item) => (
-                      <span key={item} className="px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm text-white/60 border border-white/8 rounded-full hover:border-white/25 hover:text-white/90 transition-all duration-300">
+                      <span key={item} className="px-2.5 py-1 text-[12px] sm:text-[13px] text-white/50 border border-white/[0.06] rounded-full hover:border-white/20 hover:text-white/80 transition-all duration-300 cursor-default">
                         {item}
                       </span>
                     ))}

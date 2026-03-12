@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import MarqueeBanner from "@/components/MarqueeBanner";
@@ -9,45 +11,51 @@ import ProjectsSection from "@/components/ProjectsSection";
 import AboutSection from "@/components/AboutSection";
 import ContactSection from "@/components/ContactSection";
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function Home() {
   useEffect(() => {
+    // Lenis smooth scroll
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.4,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      touchMultiplier: 2,
     });
 
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
+    lenis.on("scroll", ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
 
-    // Scroll-reveal using IntersectionObserver
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -60px 0px" }
-    );
-
-    document.querySelectorAll(".animate-in").forEach((el) => observer.observe(el));
+    // Scroll-reveal for .animate-in elements
+    const els = document.querySelectorAll(".animate-in");
+    els.forEach((el) => {
+      gsap.fromTo(
+        el,
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+    });
 
     return () => {
       lenis.destroy();
-      observer.disconnect();
+      ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);
 
   return (
     <>
       <Navbar />
-      <main className="relative w-full min-h-screen bg-black">
+      <main className="relative w-full bg-black">
         <HeroSection />
         <MarqueeBanner />
         <ProjectsSection />
