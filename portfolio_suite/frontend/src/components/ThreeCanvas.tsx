@@ -2,93 +2,78 @@
 
 import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, Stars, Float, PerspectiveCamera } from "@react-three/drei";
+import { Environment, Float, PerspectiveCamera } from "@react-three/drei";
+import { EffectComposer, Bloom, Noise, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 
-function FloatingParticles() {
-  const count = 300;
-  const mesh = useRef<THREE.InstancedMesh>(null);
-  const light = useRef<THREE.PointLight>(null);
-
-  const particles = useMemo(() => {
-    const temp = [];
-    for (let i = 0; i < count; i++) {
-      const time = Math.random() * 100;
-      const factor = Math.random() * 100 + 20;
-      const speed = Math.random() * 0.01 + 0.005;
-      const x = (Math.random() - 0.5) * 50;
-      const y = (Math.random() - 0.5) * 50;
-      const z = (Math.random() - 0.5) * 50;
-      temp.push({ time, factor, speed, x, y, z });
-    }
-    return temp;
-  }, [count]);
-
-  const dummy = useMemo(() => new THREE.Object3D(), []);
-
+function InteractiveKnot() {
+  const meshRef = useRef<THREE.Mesh>(null);
+  
   useFrame((state) => {
-    particles.forEach((particle, i) => {
-      let { time, factor, speed, x, y, z } = particle;
-      time = particle.time += speed / 2;
-      const s = Math.cos(time);
-      dummy.position.set(
-        x + Math.cos((time / 10) * factor) + (Math.sin(time * 1) * factor) / 10,
-        y + Math.sin((time / 10) * factor) + (Math.cos(time * 2) * factor) / 10,
-        z + Math.cos((time / 10) * factor) + (Math.sin(time * 3) * factor) / 10
-      );
-      dummy.scale.set(s, s, s);
-      dummy.rotation.set(s * 5, s * 5, s * 5);
-      dummy.updateMatrix();
-      if (mesh.current) {
-        mesh.current.setMatrixAt(i, dummy.matrix);
-      }
-    });
-    if (mesh.current) {
-      mesh.current.instanceMatrix.needsUpdate = true;
-    }
+    if (!meshRef.current) return;
+    
+    // Rotate slowly over time
+    meshRef.current.rotation.x = state.clock.elapsedTime * 0.1;
+    meshRef.current.rotation.y = state.clock.elapsedTime * 0.15;
+    
+    // React to mouse movement
+    const targetX = (state.pointer.x * Math.PI) / 4;
+    const targetY = (state.pointer.y * Math.PI) / 4;
+    
+    meshRef.current.rotation.z += (targetX - meshRef.current.rotation.z) * 0.05;
+    meshRef.current.rotation.x += (targetY - meshRef.current.rotation.x) * 0.05;
   });
 
   return (
-    <>
-      <pointLight ref={light} distance={40} intensity={8} color="lightblue" />
-      <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
-        <dodecahedronGeometry args={[0.2, 0]} />
-        <meshStandardMaterial color="#58a6ff" roughness={0.1} metalness={0.8} />
-      </instancedMesh>
-    </>
+    <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
+      <mesh ref={meshRef}>
+        <torusKnotGeometry args={[3, 0.8, 256, 32]} />
+        <meshPhysicalMaterial 
+          color="#050505"
+          metalness={0.9}
+          roughness={0.1}
+          clearcoat={1}
+          clearcoatRoughness={0.1}
+          wireframe={true}
+          emissive="#58a6ff"
+          emissiveIntensity={0.2}
+        />
+      </mesh>
+    </Float>
   );
 }
 
 function Scene() {
   return (
     <>
-      <PerspectiveCamera makeDefault position={[0, 0, 15]} fov={45} />
-      <color attach="background" args={["#050505"]} />
+      <PerspectiveCamera makeDefault position={[0, 0, 12]} fov={45} />
+      <color attach="background" args={["#000000"]} />
       
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} intensity={1.5} color="#58a6ff" />
+      <ambientLight intensity={0.2} />
+      <directionalLight position={[10, 10, 5]} intensity={2} color="#ffffff" />
       <directionalLight position={[-10, -10, -5]} intensity={1} color="#a100ff" />
+      <pointLight position={[0, 0, 5]} intensity={5} color="#58a6ff" distance={20} />
       
-      <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+      <InteractiveKnot />
       
-      <Float speed={1.5} rotationIntensity={1} floatIntensity={2}>
-        <FloatingParticles />
-      </Float>
-      
-      <Environment preset="city" />
+      <Environment preset="studio" />
+
+      <EffectComposer disableNormalPass>
+        <Bloom luminanceThreshold={0.2} mipmapBlur intensity={1.5} />
+        <Noise opacity={0.035} />
+        <Vignette eskil={false} offset={0.1} darkness={1.1} />
+      </EffectComposer>
     </>
   );
 }
 
 export default function ThreeCanvas() {
   return (
-    <div className="fixed inset-0 z-[-1] w-full h-full bg-[#050505]">
-      <Canvas dpr={[1, 2]}>
+    <div className="fixed inset-0 z-0 w-full h-full bg-black pointer-events-none">
+      <Canvas dpr={[1, 2]} gl={{ antialias: false }}>
         <Scene />
       </Canvas>
-      
-      {/* Overlay gradient to ease transition to HTML content */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/50 to-[#050505] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000000_100%)] pointer-events-none" />
     </div>
   );
 }

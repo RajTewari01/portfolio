@@ -1,110 +1,92 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ExternalLink, Github, Code2, Cpu, ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 const projects = [
   {
     title: "Spatial Tracker",
-    description: "Advanced spatial tracking engine utilizing computer vision. Real-time mapping and object detection with high accuracy.",
-    tech: ["Python", "PyTorch", "OpenCV"],
-    github: "https://github.com/RajTewari01/spatial-tracker",
-    live: "#",
-    icon: <Cpu className="w-8 h-8 text-[#58a6ff]" />
+    category: "AI / COMPUTER VISION",
+    description: "Advanced spatial tracking engine utilizing PyTorch and OpenCV for real-time mapping.",
+    link: "https://github.com/RajTewari01/spatial-tracker",
+    colSpan: "md:col-span-8",
+    color: "from-blue-500/20 to-transparent",
+    height: "h-[500px]"
   },
   {
-    title: "LeetCode Dashboard",
+    title: "LeetCode Visualizer",
+    category: "WEB / DASHBOARD",
     description: "Dynamic algorithmic progress tracker pulling live data through GitHub integrations.",
-    tech: ["Next.js", "REST API", "React"],
-    github: "https://github.com/RajTewari01/LeetCode",
-    live: "#",
-    icon: <Code2 className="w-8 h-8 text-[#a100ff]" />
+    link: "https://github.com/RajTewari01/LeetCode",
+    colSpan: "md:col-span-4",
+    color: "from-purple-500/20 to-transparent",
+    height: "h-[500px]"
   },
   {
-    title: "QR Code Generator",
-    description: "Robust QR code generation tool deployed as an executable executable format via PyQt.",
-    tech: ["Python", "PyQt", "CLI"],
-    github: "https://github.com/RajTewari01/QR_CODE_GENERATOR_WITH_EXE",
-    live: "#",
-    icon: <ExternalLink className="w-8 h-8 text-[#3fb950]" />
+    title: "QR CLI",
+    category: "TOOLING",
+    description: "Robust execution engine wrapped in a deployable binary.",
+    link: "https://github.com/RajTewari01/QR_CODE_GENERATOR_WITH_EXE",
+    colSpan: "md:col-span-12",
+    color: "from-green-500/10 to-transparent",
+    height: "h-[300px]"
   }
 ];
 
 export default function ProjectsSection() {
   return (
-    <section className="relative min-h-screen py-32 px-6 md:px-12 lg:px-24 bg-[#020202] z-10 selection:bg-[#58a6ff]/30">
+    <section className="relative min-h-screen py-32 px-6 md:px-12 lg:px-24 bg-black z-10 selection:bg-white selection:text-black">
       
-      {/* Background glow for section */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-[#58a6ff]/5 blur-[120px] rounded-[100%] pointer-events-none" />
-
       <div className="max-w-7xl mx-auto">
         <motion.div
-          initial={{ y: 50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
-          className="mb-20 flex flex-col md:flex-row md:items-end justify-between gap-8"
+          transition={{ duration: 1 }}
+          className="mb-24 flex items-end justify-between border-b border-white/10 pb-8"
         >
-          <div>
-            <span className="text-[#58a6ff] font-mono tracking-widest text-sm uppercase mb-4 block">Selected Works</span>
-            <h2 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-gray-200 to-gray-600 tracking-tighter">
-              Featured<br/>Projects.
-            </h2>
-          </div>
-          <p className="text-gray-400 max-w-md text-lg font-light">
-            A selection of my best engineering feats, ranging from computer vision algorithms to full-stack applications.
-          </p>
+          <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter">
+            Selected<br/><span className="text-white/30">Works.</span>
+          </h2>
+          <span className="text-white/50 text-sm tracking-widest uppercase hidden md:block">2026 Archive</span>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {projects.map((project, index) => (
             <motion.div
               key={project.title}
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: index * 0.15 }}
-              className="group relative bg-gradient-to-b from-[#111] to-[#0a0a0a] border border-white/5 hover:border-[#58a6ff]/30 rounded-[2rem] p-8 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] flex flex-col h-[400px] overflow-hidden"
+              transition={{ duration: 0.8, delay: index * 0.1 }}
+              className={`group relative rounded-3xl border border-white/10 bg-[#0a0a0a] overflow-hidden ${project.colSpan} ${project.height}`}
             >
-              {/* Card Hover Glow effect */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#58a6ff]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-[#58a6ff]/20 transition-colors duration-500" />
-
-              <div className="flex justify-between items-start mb-8 relative z-10">
-                <div className="p-4 bg-white/5 rounded-2xl border border-white/5 group-hover:scale-110 transition-transform duration-500">
-                  {project.icon}
+              {/* Gradient Background */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
+              
+              <a href={project.link} target="_blank" rel="noreferrer" className="block w-full h-full p-10 relative z-10 flex flex-col justify-between">
+                <div className="flex justify-between items-start">
+                  <span className="text-xs tracking-widest uppercase text-white/50 font-mono">
+                    {project.category}
+                  </span>
+                  <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-black/50 group-hover:bg-white group-hover:text-black transition-all duration-500">
+                    <ArrowUpRight className="w-5 h-5" />
+                  </div>
                 </div>
-                <a 
-                  href={project.github} 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  className="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 border border-white/5 text-gray-400 hover:text-white hover:bg-white/10 hover:rotate-12 transition-all duration-300"
-                >
-                  <Github className="w-5 h-5" />
-                </a>
-              </div>
 
-              <div className="relative z-10 flex flex-col flex-grow">
-                <h3 className="text-3xl font-bold mb-4 text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">
-                  {project.title}
-                </h3>
-                
-                <p className="text-gray-400/80 mb-8 font-light leading-relaxed flex-grow">
-                  {project.description}
-                </p>
-
-                <div className="flex flex-wrap gap-2 mt-auto pt-6 border-t border-white/5">
-                  {project.tech.map((t) => (
-                    <span key={t} className="px-3 py-1.5 text-xs font-mono font-medium text-[#c9d1d9] bg-[#1a1a1a] rounded-lg border border-white/5">
-                      {t}
-                    </span>
-                  ))}
+                <div>
+                  <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
+                    {project.title}
+                  </h3>
+                  <p className="text-white/60 font-light max-w-md">
+                    {project.description}
+                  </p>
                 </div>
-              </div>
+              </a>
             </motion.div>
           ))}
         </div>
-
       </div>
     </section>
   );
