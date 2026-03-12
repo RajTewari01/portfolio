@@ -6,14 +6,17 @@ import Image from "next/image";
 const stats = [
   { number: "3+", label: "Years Experience" },
   { number: "15+", label: "Projects Built" },
-  { number: "5+", label: "Tech Stacks" },
+  { number: "7+", label: "Languages" },
 ];
 
 const skills = [
-  { category: "Languages", items: ["Python", "TypeScript", "Dart", "JavaScript", "C++"] },
-  { category: "Frontend", items: ["React", "Next.js", "Three.js", "Flutter", "Tailwind"] },
-  { category: "Backend", items: ["FastAPI", "Node.js", "Firebase", "PostgreSQL", "REST"] },
-  { category: "AI / ML", items: ["PyTorch", "OpenCV", "TensorFlow", "Scikit-learn", "NumPy"] },
+  { category: "Languages", items: ["Python", "Cython", "Dart", "Kotlin", "Java", "JavaScript", "SQL"] },
+  { category: "AI / ML", items: ["LangChain", "LangGraph", "PyTorch", "TensorFlow", "RAG", "GGUF", "Stable Diffusion"] },
+  { category: "Backend", items: ["FastAPI", "Django", "Flask", "Pandas", "NumPy", "Scikit-Learn"] },
+  { category: "Mobile", items: ["Flutter", "Kotlin", "Java (Android)", "Android Studio"] },
+  { category: "Cloud & DevOps", items: ["Docker", "Kubernetes", "AWS"] },
+  { category: "Databases", items: ["Oracle SQL", "PostgreSQL", "SQLite", "Vector DBs"] },
+  { category: "Automation", items: ["Selenium", "Web Scraping", "Custom Pipelines"] },
 ];
 
 export default function AboutSection() {
@@ -62,13 +65,17 @@ export default function AboutSection() {
                 className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+              <div className="absolute bottom-6 left-6">
+                <p className="text-white/80 text-sm font-medium">MAKAUT University</p>
+                <p className="text-white/40 text-xs" style={{ fontFamily: "'JetBrains Mono', monospace" }}>West Bengal, India 🇮🇳</p>
+              </div>
             </div>
             <p className="text-white/50 text-base md:text-lg font-light leading-[1.8] max-w-lg">
               I am an engineer who believes that the best software is built at the intersection of 
               <span className="text-white font-medium"> technical excellence</span> and 
               <span className="text-white font-medium"> creative vision</span>. 
-              From training neural networks to crafting pixel-perfect interfaces, 
-              I obsess over every detail to deliver experiences that feel alive.
+              From orchestrating LangChain agent systems to shipping Flutter apps, 
+              my motto is simple: <span className="gradient-text-accent font-medium">build → ship → learn → repeat</span>.
             </p>
           </motion.div>
 
@@ -98,23 +105,23 @@ export default function AboutSection() {
             </motion.div>
 
             {/* Skills Grid */}
-            <div className="space-y-10">
+            <div className="space-y-8">
               {skills.map((skill, index) => (
                 <motion.div
                   key={skill.category}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  transition={{ duration: 0.6, delay: index * 0.08 }}
                 >
-                  <p className="text-xs tracking-[0.3em] uppercase text-white/30 mb-4" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                  <p className="text-xs tracking-[0.3em] uppercase text-white/30 mb-3" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
                     {skill.category}
                   </p>
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-2">
                     {skill.items.map((item) => (
                       <span
                         key={item}
-                        className="px-4 py-2 text-sm text-white/70 border border-white/10 rounded-full hover:border-[#6366f1]/50 hover:text-white transition-all duration-300"
+                        className="px-3 py-1.5 text-sm text-white/70 border border-white/10 rounded-full hover:border-[#6366f1]/50 hover:text-white transition-all duration-300"
                       >
                         {item}
                       </span>

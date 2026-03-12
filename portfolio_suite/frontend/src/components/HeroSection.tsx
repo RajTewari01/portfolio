@@ -47,7 +47,7 @@ export default function HeroSection() {
           </span>
         </div>
         <span className="text-xs tracking-[0.3em] uppercase text-white/40 hidden md:block" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-          Based in India
+          West Bengal, India
         </span>
       </motion.div>
 
@@ -82,7 +82,7 @@ export default function HeroSection() {
           transition={{ delay: 1.8, duration: 1 }}
           className="text-white/50 text-base md:text-lg max-w-md mt-8 font-light leading-relaxed"
         >
-          Full-Stack Engineer & AI/ML Architect building high-performance systems and immersive digital experiences.
+          Full-Stack Engineer & AI/ML Architect — building cloud-native systems, LLM-powered agents, and cross-platform mobile apps.
         </motion.p>
       </div>
 
@@ -91,7 +91,7 @@ export default function HeroSection() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 2.2, duration: 1 }}
-        className="flex justify-between items-end pb-12"
+        className="flex justify-between items-end pb-24"
       >
         {/* Profile chip */}
         <div className="flex items-center gap-4">

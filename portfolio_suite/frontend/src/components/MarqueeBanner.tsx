@@ -2,9 +2,11 @@
 
 export default function MarqueeBanner() {
   const words = [
-    "FULL-STACK", "•", "AI/ML", "•", "PYTORCH", "•", "REACT", "•", 
-    "NEXT.JS", "•", "FLUTTER", "•", "FASTAPI", "•", "FIREBASE", "•",
-    "THREE.JS", "•", "PYTHON", "•", "TYPESCRIPT", "•", "COMPUTER VISION", "•",
+    "PYTHON", "•", "DART", "•", "KOTLIN", "•", "FLUTTER", "•",
+    "FASTAPI", "•", "DJANGO", "•", "PYTORCH", "•", "LANGCHAIN", "•",
+    "DOCKER", "•", "KUBERNETES", "•", "AWS", "•", "REACT", "•",
+    "NEXT.JS", "•", "THREE.JS", "•", "STABLE DIFFUSION", "•",
+    "FIREBASE", "•", "POSTGRESQL", "•", "ORACLE SQL", "•",
   ];
 
   const marqueeContent = words.join("  ");
