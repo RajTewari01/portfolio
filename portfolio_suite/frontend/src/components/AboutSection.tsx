@@ -1,138 +1,95 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Image from "next/image";
 
 const stats = [
-  { number: "3+", label: "Years Experience" },
-  { number: "15+", label: "Projects Built" },
+  { number: "3+", label: "Years" },
+  { number: "15+", label: "Projects" },
   { number: "7+", label: "Languages" },
 ];
 
 const skills = [
   { category: "Languages", items: ["Python", "Cython", "Dart", "Kotlin", "Java", "JavaScript", "SQL"] },
-  { category: "AI / ML", items: ["LangChain", "LangGraph", "PyTorch", "TensorFlow", "RAG", "GGUF", "Stable Diffusion"] },
-  { category: "Backend", items: ["FastAPI", "Django", "Flask", "Pandas", "NumPy", "Scikit-Learn"] },
-  { category: "Mobile", items: ["Flutter", "Kotlin", "Java (Android)", "Android Studio"] },
-  { category: "Cloud & DevOps", items: ["Docker", "Kubernetes", "AWS"] },
+  { category: "AI / ML", items: ["LangChain", "LangGraph", "PyTorch", "TensorFlow", "RAG", "Stable Diffusion"] },
+  { category: "Backend", items: ["FastAPI", "Django", "Flask"] },
+  { category: "Mobile", items: ["Flutter", "Kotlin", "Java (Android)"] },
+  { category: "Cloud", items: ["Docker", "Kubernetes", "AWS"] },
   { category: "Databases", items: ["Oracle SQL", "PostgreSQL", "SQLite", "Vector DBs"] },
-  { category: "Automation", items: ["Selenium", "Web Scraping", "Custom Pipelines"] },
+  { category: "Automation", items: ["Selenium", "Web Scraping", "Pipelines"] },
 ];
 
 export default function AboutSection() {
   return (
-    <section id="about" className="relative z-10 bg-black py-24 md:py-32 px-8 md:px-16 lg:px-24 xl:px-32">
-      <div className="max-w-[1400px] mx-auto">
+    <section id="about" className="relative bg-black py-24 sm:py-32 md:py-40 section-padding">
+      <div className="max-w-[1200px] mx-auto">
 
         {/* Header */}
-        <div className="mb-16 md:mb-20">
-          <motion.span
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-xs tracking-[0.4em] uppercase text-white/30 block mb-6"
-            style={{ fontFamily: "'JetBrains Mono', monospace" }}
-          >
-            About
-          </motion.span>
-          <motion.h2
-            initial={{ y: 80, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="text-5xl md:text-8xl font-black tracking-[-0.04em] uppercase gradient-text"
+        <div className="animate-in mb-16 sm:mb-20">
+          <span className="text-[11px] tracking-[0.4em] uppercase text-white/25 block mb-4 font-mono">About</span>
+          <h2
+            className="text-4xl sm:text-6xl md:text-7xl font-black tracking-[-0.04em] uppercase gradient-text"
             style={{ fontFamily: "'Syne', sans-serif" }}
           >
             About.
-          </motion.h2>
+          </h2>
         </div>
 
-        {/* Two-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 mb-20">
-          
-          {/* Left — Image + Bio */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-          >
-            <div className="relative aspect-[4/5] rounded-3xl overflow-hidden mb-10 border border-white/5">
-              <Image 
-                src="/profile.jpg" 
-                alt="Biswadeep Tewari" 
-                fill 
-                className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              <div className="absolute bottom-6 left-6">
+        {/* Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-16">
+
+          {/* Left — Image (2 cols) */}
+          <div className="animate-in lg:col-span-2">
+            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-white/5">
+              <Image src="/profile.jpg" alt="Biswadeep Tewari" fill className="object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <div className="absolute bottom-5 left-5">
                 <p className="text-white/80 text-sm font-medium">MAKAUT University</p>
-                <p className="text-white/40 text-xs" style={{ fontFamily: "'JetBrains Mono', monospace" }}>West Bengal, India 🇮🇳</p>
+                <p className="text-white/35 text-[11px] font-mono">West Bengal, India 🇮🇳</p>
               </div>
             </div>
-            <p className="text-white/50 text-base md:text-lg font-light leading-[1.8] max-w-lg">
-              I am an engineer who believes that the best software is built at the intersection of 
-              <span className="text-white font-medium"> technical excellence</span> and 
-              <span className="text-white font-medium"> creative vision</span>. 
-              From orchestrating LangChain agent systems to shipping Flutter apps, 
-              my motto is simple: <span className="gradient-text-accent font-medium">build → ship → learn → repeat</span>.
+            <p className="text-white/40 text-sm sm:text-base font-light leading-[1.8] mt-6">
+              I build at the intersection of
+              <span className="text-white/80"> engineering</span> and
+              <span className="text-white/80"> creativity</span>.
+              My motto: <span className="gradient-text-accent font-medium">build → ship → learn → repeat</span>.
             </p>
-          </motion.div>
+          </div>
 
-          {/* Right — Stats + Skills */}
-          <div>
+          {/* Right — Stats + Skills (3 cols) */}
+          <div className="lg:col-span-3">
             {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1 }}
-              className="grid grid-cols-3 gap-8 mb-16 pb-16 border-b border-white/5"
-            >
+            <div className="animate-in grid grid-cols-3 gap-6 mb-12 pb-12 border-b border-white/5">
               {stats.map((stat) => (
                 <div key={stat.label}>
-                  <p 
-                    className="text-4xl md:text-6xl font-black gradient-text-accent mb-2"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
-                  >
+                  <p className="text-3xl sm:text-5xl font-black gradient-text-accent" style={{ fontFamily: "'Syne', sans-serif" }}>
                     {stat.number}
                   </p>
-                  <p className="text-xs tracking-[0.2em] uppercase text-white/30" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                  <p className="text-[10px] sm:text-[11px] tracking-[0.2em] uppercase text-white/25 mt-1 font-mono">
                     {stat.label}
                   </p>
                 </div>
               ))}
-            </motion.div>
+            </div>
 
-            {/* Skills Grid */}
-            <div className="space-y-8">
-              {skills.map((skill, index) => (
-                <motion.div
-                  key={skill.category}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.08 }}
-                >
-                  <p className="text-xs tracking-[0.3em] uppercase text-white/30 mb-3" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+            {/* Skills */}
+            <div className="space-y-6">
+              {skills.map((skill, i) => (
+                <div key={skill.category} className="animate-in" style={{ transitionDelay: `${i * 60}ms` }}>
+                  <p className="text-[10px] sm:text-[11px] tracking-[0.3em] uppercase text-white/25 mb-2 font-mono">
                     {skill.category}
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {skill.items.map((item) => (
-                      <span
-                        key={item}
-                        className="px-3 py-1.5 text-sm text-white/70 border border-white/10 rounded-full hover:border-[#6366f1]/50 hover:text-white transition-all duration-300"
-                      >
+                      <span key={item} className="px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm text-white/60 border border-white/8 rounded-full hover:border-white/25 hover:text-white/90 transition-all duration-300">
                         {item}
                       </span>
                     ))}
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
         </div>
-
       </div>
     </section>
   );

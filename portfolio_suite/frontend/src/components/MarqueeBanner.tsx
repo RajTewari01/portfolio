@@ -1,28 +1,14 @@
 "use client";
 
 export default function MarqueeBanner() {
-  const words = [
-    "PYTHON", "•", "DART", "•", "KOTLIN", "•", "FLUTTER", "•",
-    "FASTAPI", "•", "DJANGO", "•", "PYTORCH", "•", "LANGCHAIN", "•",
-    "DOCKER", "•", "KUBERNETES", "•", "AWS", "•", "REACT", "•",
-    "NEXT.JS", "•", "THREE.JS", "•", "STABLE DIFFUSION", "•",
-    "FIREBASE", "•", "POSTGRESQL", "•", "ORACLE SQL", "•",
-  ];
-
-  const marqueeContent = words.join("  ");
+  const items = "PYTHON  •  DART  •  KOTLIN  •  FLUTTER  •  FASTAPI  •  DJANGO  •  PYTORCH  •  LANGCHAIN  •  DOCKER  •  K8S  •  AWS  •  NEXT.JS  •  THREE.JS  •  STABLE DIFFUSION  •  POSTGRESQL  •  ORACLE SQL  •  ";
 
   return (
-    <div className="relative z-10 py-8 border-y border-white/5 bg-black/80 backdrop-blur-sm overflow-hidden">
+    <div className="relative py-5 sm:py-6 border-y border-white/[0.04] bg-black overflow-hidden">
       <div className="flex whitespace-nowrap animate-marquee">
-        <span className="text-sm md:text-base tracking-[0.4em] uppercase text-white/20 font-light mx-4" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-          {marqueeContent}
-        </span>
-        <span className="text-sm md:text-base tracking-[0.4em] uppercase text-white/20 font-light mx-4" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-          {marqueeContent}
-        </span>
-        <span className="text-sm md:text-base tracking-[0.4em] uppercase text-white/20 font-light mx-4" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-          {marqueeContent}
-        </span>
+        <span className="text-[11px] sm:text-xs tracking-[0.35em] uppercase text-white/[0.12] font-mono">{items}</span>
+        <span className="text-[11px] sm:text-xs tracking-[0.35em] uppercase text-white/[0.12] font-mono">{items}</span>
+        <span className="text-[11px] sm:text-xs tracking-[0.35em] uppercase text-white/[0.12] font-mono">{items}</span>
       </div>
     </div>
   );

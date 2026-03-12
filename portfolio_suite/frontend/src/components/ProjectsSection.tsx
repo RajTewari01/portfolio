@@ -8,127 +8,93 @@ const projects = [
     id: "01",
     title: "Spatial Tracker",
     category: "AI / Computer Vision",
-    description: "Advanced spatial tracking engine utilizing PyTorch and OpenCV for real-time mapping and object detection with centimeter-level accuracy.",
-    tech: ["Python", "PyTorch", "OpenCV", "NumPy"],
+    description: "Real-time spatial tracking engine with centimeter-level accuracy using PyTorch and OpenCV.",
+    tech: ["Python", "PyTorch", "OpenCV"],
     link: "https://github.com/RajTewari01/spatial-tracker",
-    size: "large",
   },
   {
     id: "02",
     title: "LeetCode Dashboard",
     category: "Web / Dashboard",
-    description: "Dynamic algorithmic progress visualizer. .",
-    tech: ["Next.js", "React", "REST API", "Vercel"],
+    description: "Dynamic algorithmic progress visualizer with live data through GitHub API integrations.",
+    tech: ["Next.js", "React", "API"],
     link: "https://github.com/RajTewari01/LeetCode",
-    size: "medium",
   },
   {
     id: "03",
     title: "QR Engine",
     category: "Tooling / Desktop",
-    description: "Robust QR generation engine wrapped in a standalone executable binary with GUI interface via PyQt.",
-    tech: ["Python", "PyQt5", "QRCode", "PyInstaller"],
+    description: "QR generation engine wrapped in a standalone executable binary with PyQt GUI.",
+    tech: ["Python", "PyQt5", "PyInstaller"],
     link: "https://github.com/RajTewari01/QR_CODE_GENERATOR_WITH_EXE",
-    size: "medium",
   },
 ];
 
 export default function ProjectsSection() {
   return (
-    <section id="work" className="relative z-10 bg-black py-32 md:py-48 px-8 md:px-16 lg:px-24 xl:px-32">
-      <div className="max-w-[1400px] mx-auto">
+    <section id="work" className="relative bg-black py-24 sm:py-32 md:py-40 section-padding">
+      <div className="max-w-[1200px] mx-auto">
 
-        {/* Section header */}
-        <div className="flex items-end justify-between mb-20 md:mb-32">
+        {/* Header */}
+        <div className="animate-in flex flex-col sm:flex-row sm:items-end justify-between mb-16 sm:mb-24">
           <div>
-            <motion.span
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1 }}
-              className="text-xs tracking-[0.4em] uppercase text-white/30 block mb-6"
-              style={{ fontFamily: "'JetBrains Mono', monospace" }}
-            >
+            <span className="text-[11px] tracking-[0.4em] uppercase text-white/25 block mb-4 font-mono">
               Selected Projects
-            </motion.span>
-            <motion.h2
-              initial={{ y: 80, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-5xl md:text-8xl font-black tracking-[-0.04em] uppercase gradient-text"
+            </span>
+            <h2
+              className="text-4xl sm:text-6xl md:text-7xl font-black tracking-[-0.04em] uppercase gradient-text"
               style={{ fontFamily: "'Syne', sans-serif" }}
             >
               Work.
-            </motion.h2>
+            </h2>
           </div>
-          <motion.span
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-xs tracking-[0.3em] uppercase text-white/20 hidden md:block"
-            style={{ fontFamily: "'JetBrains Mono', monospace" }}
-          >
+          <span className="text-[11px] tracking-[0.3em] uppercase text-white/15 font-mono mt-4 sm:mt-0">
             ({String(projects.length).padStart(2, "0")})
-          </motion.span>
+          </span>
         </div>
 
         {/* Project list */}
-        <div className="space-y-2">
+        <div>
           {projects.map((project, index) => (
-            <motion.a
+            <a
               key={project.id}
               href={project.link}
               target="_blank"
               rel="noreferrer"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
-              className="group block"
-              data-cursor-hover
+              className="animate-in group block"
+              style={{ transitionDelay: `${index * 100}ms` }}
             >
-              {/* Divider line */}
               <div className="section-line" />
+              <div className="py-8 sm:py-12 md:py-14 flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-8 group-hover:translate-x-2 transition-transform duration-500">
 
-              <div className="py-10 md:py-16 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-500 group-hover:pl-4">
-                
-                <div className="flex items-start md:items-center gap-6 md:gap-12">
-                  {/* Number */}
-                  <span className="text-xs text-white/20 pt-2 md:pt-0" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                    {project.id}
-                  </span>
-
-                  {/* Title & Category */}
+                <div className="flex items-start md:items-center gap-4 sm:gap-6 md:gap-10">
+                  <span className="text-[11px] text-white/15 font-mono pt-1 md:pt-0 shrink-0">{project.id}</span>
                   <div>
-                    <h3 
-                      className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white group-hover:gradient-text-accent transition-all duration-500"
+                    <h3
+                      className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-white group-hover:text-[#6366f1] transition-colors duration-500"
                       style={{ fontFamily: "'Syne', sans-serif" }}
                     >
                       {project.title}
                     </h3>
-                    <p className="text-xs tracking-[0.3em] uppercase text-white/30 mt-3" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                    <p className="text-[11px] tracking-[0.25em] uppercase text-white/25 mt-2 font-mono">
                       {project.category}
                     </p>
                   </div>
                 </div>
 
-                {/* Description & Arrow */}
-                <div className="flex items-center gap-8 md:gap-16">
-                  <p className="text-white/40 text-sm max-w-xs hidden lg:block font-light leading-relaxed">
+                <div className="flex items-center gap-6 md:gap-10 md:shrink-0">
+                  <p className="text-white/35 text-sm max-w-[280px] hidden lg:block font-light leading-relaxed">
                     {project.description}
                   </p>
-
-                  <div className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-white group-hover:text-black group-hover:border-white group-hover:rotate-45 transition-all duration-500">
-                    <ArrowUpRight className="w-5 h-5" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-white/8 flex items-center justify-center shrink-0 group-hover:bg-white group-hover:text-black group-hover:border-white group-hover:rotate-45 transition-all duration-500">
+                    <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                 </div>
               </div>
-            </motion.a>
+            </a>
           ))}
           <div className="section-line" />
         </div>
-
       </div>
     </section>
   );
