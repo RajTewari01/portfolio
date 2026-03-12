@@ -5,88 +5,130 @@ import { ArrowUpRight } from "lucide-react";
 
 const projects = [
   {
+    id: "01",
     title: "Spatial Tracker",
-    category: "AI / COMPUTER VISION",
-    description: "Advanced spatial tracking engine utilizing PyTorch and OpenCV for real-time mapping.",
+    category: "AI / Computer Vision",
+    description: "Advanced spatial tracking engine utilizing PyTorch and OpenCV for real-time mapping and object detection with centimeter-level accuracy.",
+    tech: ["Python", "PyTorch", "OpenCV", "NumPy"],
     link: "https://github.com/RajTewari01/spatial-tracker",
-    colSpan: "md:col-span-8",
-    color: "from-blue-500/20 to-transparent",
-    height: "h-[500px]"
+    size: "large",
   },
   {
-    title: "LeetCode Visualizer",
-    category: "WEB / DASHBOARD",
-    description: "Dynamic algorithmic progress tracker pulling live data through GitHub integrations.",
+    id: "02",
+    title: "LeetCode Dashboard",
+    category: "Web / Dashboard",
+    description: "Dynamic algorithmic progress visualizer. .",
+    tech: ["Next.js", "React", "REST API", "Vercel"],
     link: "https://github.com/RajTewari01/LeetCode",
-    colSpan: "md:col-span-4",
-    color: "from-purple-500/20 to-transparent",
-    height: "h-[500px]"
+    size: "medium",
   },
   {
-    title: "QR CLI",
-    category: "TOOLING",
-    description: "Robust execution engine wrapped in a deployable binary.",
+    id: "03",
+    title: "QR Engine",
+    category: "Tooling / Desktop",
+    description: "Robust QR generation engine wrapped in a standalone executable binary with GUI interface via PyQt.",
+    tech: ["Python", "PyQt5", "QRCode", "PyInstaller"],
     link: "https://github.com/RajTewari01/QR_CODE_GENERATOR_WITH_EXE",
-    colSpan: "md:col-span-12",
-    color: "from-green-500/10 to-transparent",
-    height: "h-[300px]"
-  }
+    size: "medium",
+  },
 ];
 
 export default function ProjectsSection() {
   return (
-    <section className="relative min-h-screen py-32 px-6 md:px-12 lg:px-24 bg-black z-10 selection:bg-white selection:text-black">
-      
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 1 }}
-          className="mb-24 flex items-end justify-between border-b border-white/10 pb-8"
-        >
-          <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter">
-            Selected<br/><span className="text-white/30">Works.</span>
-          </h2>
-          <span className="text-white/50 text-sm tracking-widest uppercase hidden md:block">2026 Archive</span>
-        </motion.div>
+    <section id="work" className="relative z-10 bg-black py-32 md:py-48 px-8 md:px-16 lg:px-24 xl:px-32">
+      <div className="max-w-[1400px] mx-auto">
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        {/* Section header */}
+        <div className="flex items-end justify-between mb-20 md:mb-32">
+          <div>
+            <motion.span
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1 }}
+              className="text-xs tracking-[0.4em] uppercase text-white/30 block mb-6"
+              style={{ fontFamily: "'JetBrains Mono', monospace" }}
+            >
+              Selected Projects
+            </motion.span>
+            <motion.h2
+              initial={{ y: 80, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+              className="text-5xl md:text-8xl font-black tracking-[-0.04em] uppercase gradient-text"
+              style={{ fontFamily: "'Syne', sans-serif" }}
+            >
+              Work.
+            </motion.h2>
+          </div>
+          <motion.span
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-xs tracking-[0.3em] uppercase text-white/20 hidden md:block"
+            style={{ fontFamily: "'JetBrains Mono', monospace" }}
+          >
+            ({String(projects.length).padStart(2, "0")})
+          </motion.span>
+        </div>
+
+        {/* Project list */}
+        <div className="space-y-2">
           {projects.map((project, index) => (
-            <motion.div
-              key={project.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+            <motion.a
+              key={project.id}
+              href={project.link}
+              target="_blank"
+              rel="noreferrer"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.8, delay: index * 0.1 }}
-              className={`group relative rounded-3xl border border-white/10 bg-[#0a0a0a] overflow-hidden ${project.colSpan} ${project.height}`}
+              className="group block"
+              data-cursor-hover
             >
-              {/* Gradient Background */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
-              
-              <a href={project.link} target="_blank" rel="noreferrer" className="block w-full h-full p-10 relative z-10 flex flex-col justify-between">
-                <div className="flex justify-between items-start">
-                  <span className="text-xs tracking-widest uppercase text-white/50 font-mono">
-                    {project.category}
+              {/* Divider line */}
+              <div className="section-line" />
+
+              <div className="py-10 md:py-16 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-500 group-hover:pl-4">
+                
+                <div className="flex items-start md:items-center gap-6 md:gap-12">
+                  {/* Number */}
+                  <span className="text-xs text-white/20 pt-2 md:pt-0" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                    {project.id}
                   </span>
-                  <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-black/50 group-hover:bg-white group-hover:text-black transition-all duration-500">
-                    <ArrowUpRight className="w-5 h-5" />
+
+                  {/* Title & Category */}
+                  <div>
+                    <h3 
+                      className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white group-hover:gradient-text-accent transition-all duration-500"
+                      style={{ fontFamily: "'Syne', sans-serif" }}
+                    >
+                      {project.title}
+                    </h3>
+                    <p className="text-xs tracking-[0.3em] uppercase text-white/30 mt-3" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                      {project.category}
+                    </p>
                   </div>
                 </div>
 
-                <div>
-                  <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
-                    {project.title}
-                  </h3>
-                  <p className="text-white/60 font-light max-w-md">
+                {/* Description & Arrow */}
+                <div className="flex items-center gap-8 md:gap-16">
+                  <p className="text-white/40 text-sm max-w-xs hidden lg:block font-light leading-relaxed">
                     {project.description}
                   </p>
+
+                  <div className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-white group-hover:text-black group-hover:border-white group-hover:rotate-45 transition-all duration-500">
+                    <ArrowUpRight className="w-5 h-5" />
+                  </div>
                 </div>
-              </a>
-            </motion.div>
+              </div>
+            </motion.a>
           ))}
+          <div className="section-line" />
         </div>
+
       </div>
     </section>
   );

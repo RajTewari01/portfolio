@@ -1,20 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "Biswadeep Tewari | Full-Stack & AI/ML Engineer",
-  description: "Professional portfolio of Biswadeep Tewari featuring a custom 3D environment, GitHub projects, and more.",
+  title: "Biswadeep Tewari — Engineer & Creator",
+  description: "Portfolio of Biswadeep Tewari. Full-Stack Engineer, AI/ML Architect, and Mobile Developer. Pushing the boundaries of what's possible.",
+  keywords: ["portfolio", "developer", "engineer", "AI", "ML", "full-stack", "Biswadeep Tewari"],
+  openGraph: {
+    title: "Biswadeep Tewari — Engineer & Creator",
+    description: "Full-Stack Engineer, AI/ML Architect, and Mobile Developer.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -23,10 +25,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white selection:bg-blue-500/30`}
-      >
+    <html lang="en">
+      <body className={`${spaceGrotesk.variable} antialiased`}>
+        <div className="noise-overlay" />
         {children}
       </body>
     </html>

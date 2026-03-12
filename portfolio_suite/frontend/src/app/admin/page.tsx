@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { signInWithEmailAndPassword, onAuthStateChanged, signOut, User } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import type { User } from "firebase/auth";
+
+export const dynamic = "force-dynamic";
 
 export default function AdminPage() {
   const [user, setUser] = useState<User | null>(null);
@@ -16,17 +17,26 @@ export default function AdminPage() {
   const [projectTech, setProjectTech] = useState("");
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-    return () => unsubscribe();
+    let unsubscribe: (() => void) | undefined;
+    
+    (async () => {
+      const { onAuthStateChanged } = await import("firebase/auth");
+      const { auth } = await import("@/lib/firebase");
+      unsubscribe = onAuthStateChanged(auth, (currentUser: User | null) => {
+        setUser(currentUser);
+        setLoading(false);
+      });
+    })();
+
+    return () => { if (unsubscribe) unsubscribe(); };
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     try {
+      const { signInWithEmailAndPassword } = await import("firebase/auth");
+      const { auth } = await import("@/lib/firebase");
       await signInWithEmailAndPassword(auth, email, password);
     } catch (err: any) {
       setError(err.message);
@@ -34,6 +44,8 @@ export default function AdminPage() {
   };
 
   const handleLogout = async () => {
+    const { signOut } = await import("firebase/auth");
+    const { auth } = await import("@/lib/firebase");
     await signOut(auth);
   };
 
