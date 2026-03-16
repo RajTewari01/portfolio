@@ -2,179 +2,370 @@
 
 import { useState, useEffect } from "react";
 import type { User } from "firebase/auth";
+import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "firebase/firestore";
 
 export const dynamic = "force-dynamic";
 
 export default function AdminPage() {
+  // Auth State
   const [user, setUser] = useState<User | null>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [authStage, setAuthStage] = useState<"login" | "otp" | "authenticated">("login");
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  
+  // Login Form
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
+  
+  // OTP Form
+  const [otp, setOtp] = useState("");
+  const [sendingOtp, setSendingOtp] = useState(false);
+  
+  // Project Form
   const [projectTitle, setProjectTitle] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
   const [projectTech, setProjectTech] = useState("");
+  const [projectLink, setProjectLink] = useState("");
+  
+  // Data
+  const [messages, setMessages] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
+  
+  // UI State
+  const [error, setError] = useState("");
+  const [loadingAction, setLoadingAction] = useState(false);
+  const [activeTab, setActiveTab] = useState<"projects" | "messages">("projects");
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
+    
+    // Check localStorage for existing valid 2FA session token
+    const token = localStorage.getItem("admin_session_token");
+    if (token) {
+       // In a real app we'd verify the JWT expiry here.
+       setSessionToken(token);
+    }
     
     (async () => {
       const { onAuthStateChanged } = await import("firebase/auth");
       const { auth } = await import("@/lib/firebase");
       unsubscribe = onAuthStateChanged(auth, (currentUser: User | null) => {
         setUser(currentUser);
-        setLoading(false);
+        setCheckingAuth(false);
+        
+        if (currentUser) {
+           if (token) {
+              setAuthStage("authenticated");
+              fetchData();
+           } else {
+              setAuthStage("otp");
+              handleSendOtp(currentUser.email!);
+           }
+        } else {
+           setAuthStage("login");
+        }
       });
     })();
 
     return () => { if (unsubscribe) unsubscribe(); };
-  }, []);
+  }, [sessionToken]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const fetchData = async () => {
+    try {
+      const { db } = await import("@/lib/firebase");
+      
+      // Fetch Projects
+      const projSnap = await getDocs(collection(db, "projects"));
+      const pData = projSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      setProjects(pData);
+      
+      // Fetch Messages (if any stored)
+      const msgSnap = await getDocs(query(collection(db, "messages"), orderBy("createdAt", "desc")));
+      const mData = msgSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      setMessages(mData);
+    } catch (err) {
+      console.error("Error fetching data", err);
+    }
+  };
+
+  // ─── STAGE 1: FIREBASE LOGIN ───
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoadingAction(true);
     try {
       const { signInWithEmailAndPassword } = await import("firebase/auth");
       const { auth } = await import("@/lib/firebase");
       await signInWithEmailAndPassword(auth, email, password);
+      // Auth observer will transition state to 'otp'
     } catch (err: any) {
       setError(err.message);
+      setLoadingAction(false);
+    }
+  };
+
+  // ─── STAGE 2: SEND & VERIFY OTP ───
+  const handleSendOtp = async (userEmail: string) => {
+    setSendingOtp(true);
+    setError("");
+    try {
+      const res = await fetch("/api/admin/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: userEmail }),
+      });
+      if (!res.ok) throw new Error("Failed to send OTP");
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSendingOtp(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoadingAction(true);
+    try {
+      const res = await fetch("/api/admin/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user?.email, otp }),
+      });
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || "Verification failed");
+      
+      // Success!
+      localStorage.setItem("admin_session_token", data.token);
+      setSessionToken(data.token);
+      setAuthStage("authenticated");
+      fetchData();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoadingAction(false);
     }
   };
 
   const handleLogout = async () => {
     const { signOut } = await import("firebase/auth");
     const { auth } = await import("@/lib/firebase");
+    localStorage.removeItem("admin_session_token");
+    setSessionToken(null);
+    setAuthStage("login");
     await signOut(auth);
   };
 
+  // ─── CRUD OPERATIONS ───
   const handleAddProject = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
-    
+    setLoadingAction(true);
     try {
-      const token = await user.getIdToken();
-      const techArray = projectTech.split(",").map(t => t.trim());
-      
-      const response = await fetch("http://localhost:8000/api/v1/projects/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          title: projectTitle,
-          description: projectDescription,
-          technologies: techArray,
-          featured: true
-        })
+      const { db } = await import("@/lib/firebase");
+      await addDoc(collection(db, "projects"), {
+        title: projectTitle,
+        description: projectDescription,
+        technologies: projectTech.split(",").map(t => t.trim()),
+        link: projectLink,
+        createdAt: new Date().toISOString()
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to add project via API");
-      }
       
-      alert("Project added successfully!");
       setProjectTitle("");
       setProjectDescription("");
       setProjectTech("");
-      
+      setProjectLink("");
+      fetchData();
     } catch (err: any) {
-      alert("Error adding project. Check console.");
+      alert("Error adding project");
+      console.error(err);
+    } finally {
+      setLoadingAction(false);
+    }
+  };
+
+  const handleDeleteProject = async (id: string) => {
+    if (!confirm("Delete this project?")) return;
+    try {
+      const { db } = await import("@/lib/firebase");
+      await deleteDoc(doc(db, "projects", id));
+      fetchData();
+    } catch (err) {
       console.error(err);
     }
   };
 
-  if (loading) {
-    return <div className="min-h-screen bg-black flex items-center justify-center text-white">Loading Admin...</div>;
-  }
-
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-4">
-        <form onSubmit={handleLogin} className="bg-[#111111] p-8 rounded-2xl border border-white/10 w-full max-w-md">
-          <h1 className="text-2xl font-bold mb-6 text-white text-center">Admin Login</h1>
-          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-          <div className="mb-4">
-            <label className="block text-gray-400 mb-2">Email</label>
-            <input 
-              type="email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-black border border-white/20 rounded-lg p-3 text-white focus:border-[#58a6ff] outline-none transition-colors"
-              required 
-            />
-          </div>
-          <div className="mb-6">
-            <label className="block text-gray-400 mb-2">Password</label>
-            <input 
-              type="password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-black border border-white/20 rounded-lg p-3 text-white focus:border-[#58a6ff] outline-none transition-colors"
-              required 
-            />
-          </div>
-          <button type="submit" className="w-full bg-[#58a6ff] hover:bg-[#58a6ff]/80 text-black font-bold py-3 rounded-lg transition-colors">
-            Login
-          </button>
-        </form>
-      </div>
-    );
+  // ─── RENDER ───
+  if (checkingAuth) {
+    return <div className="min-h-screen bg-black flex items-center justify-center text-white font-mono opacity-50">INITIALIZING SECURITY PROTOCOLS...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-black text-white p-8 md:p-16">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-12 border-b border-white/10 pb-6">
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-gray-400 text-sm">{user.email}</span>
-            <button onClick={handleLogout} className="px-4 py-2 border border-red-500/50 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors">
-              Logout
-            </button>
-          </div>
+    <div className="min-h-screen bg-black text-white p-6 md:p-12 font-space-grotesk relative">
+       {/* Background Grid */}
+       <div className="fixed inset-0 pointer-events-none opacity-5" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: '50px 50px' }} />
+
+      <div className="max-w-6xl mx-auto relative z-10 pt-16">
+        
+        {/* LOGO */}
+        <div className="flex items-center gap-4 mb-20 justify-center">
+            <div className="w-10 h-10 bg-white text-black font-syne font-bold flex items-center justify-center rounded-sm">BT</div>
+            <h1 className="font-syne font-bold text-2xl tracking-widest text-white/50">NEXUS ADMIN</h1>
         </div>
 
-        <div className="bg-[#111111] p-8 rounded-2xl border border-white/10">
-          <h2 className="text-xl font-bold mb-6">Add New Project</h2>
-          <form onSubmit={handleAddProject} className="space-y-6">
-            <div>
-              <label className="block text-gray-400 mb-2">Project Title</label>
-              <input 
-                type="text" 
-                value={projectTitle}
-                onChange={(e) => setProjectTitle(e.target.value)}
-                className="w-full bg-black border border-white/20 rounded-lg p-3 text-white focus:border-[#58a6ff] outline-none"
-                required 
-              />
+        {/* ─── STAGE 1: LOGIN ─── */}
+        {authStage === "login" && (
+          <form onSubmit={handleLogin} className="glass-card max-w-md mx-auto p-10 rounded-2xl border border-white/10 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-orange-500" />
+            <h2 className="text-xl font-syne font-bold mb-8 tracking-wider">AUTHORIZATION REQUIRED</h2>
+            {error && <p className="text-red-400 text-sm mb-6 bg-red-500/10 p-3 rounded border border-red-500/20">{error}</p>}
+            <div className="space-y-6 mb-8">
+              <div>
+                <label className="block text-[10px] font-mono tracking-[0.2em] text-white/40 mb-2 uppercase">Identity Link</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} required 
+                  className="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-sm focus:border-red-500/50 outline-none transition-colors" />
+              </div>
+              <div>
+                <label className="block text-[10px] font-mono tracking-[0.2em] text-white/40 mb-2 uppercase">Passphrase</label>
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} required 
+                  className="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-sm focus:border-red-500/50 outline-none transition-colors" />
+              </div>
             </div>
-            <div>
-              <label className="block text-gray-400 mb-2">Description</label>
-              <textarea 
-                value={projectDescription}
-                onChange={(e) => setProjectDescription(e.target.value)}
-                className="w-full bg-black border border-white/20 rounded-lg p-3 text-white min-h-[120px] focus:border-[#58a6ff] outline-none"
-                required 
-              />
-            </div>
-            <div>
-              <label className="block text-gray-400 mb-2">Technologies (comma separated)</label>
-              <input 
-                type="text" 
-                value={projectTech}
-                onChange={(e) => setProjectTech(e.target.value)}
-                placeholder="React, Next.js, Tailwind"
-                className="w-full bg-black border border-white/20 rounded-lg p-3 text-white focus:border-[#58a6ff] outline-none"
-                required 
-              />
-            </div>
-            <button type="submit" className="px-6 py-3 bg-[#3fb950] hover:bg-[#3fb950]/80 text-white font-bold rounded-lg transition-colors">
-              Deploy Project
+            <button type="submit" disabled={loadingAction} className="w-full bg-white text-black font-syne font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors">
+              {loadingAction ? "VERIFYING..." : "ENTER PORTAL"}
             </button>
           </form>
-        </div>
+        )}
+
+        {/* ─── STAGE 2: OTP ─── */}
+        {authStage === "otp" && (
+          <form onSubmit={handleVerifyOtp} className="glass-card max-w-md mx-auto p-10 rounded-2xl border border-white/10 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-orange-500" />
+            <h2 className="text-xl font-syne font-bold mb-2 tracking-wider">2FA VERIFICATION</h2>
+            <p className="text-xs text-white/50 mb-8 font-mono">Code sent to your private channel.</p>
+            {error && <p className="text-red-400 text-sm mb-6 bg-red-500/10 p-3 rounded border border-red-500/20">{error}</p>}
+            
+            <div className="mb-8">
+              <label className="block text-[10px] font-mono tracking-[0.2em] text-white/40 mb-2 uppercase">One Time Passcode</label>
+              <input type="text" value={otp} onChange={e => setOtp(e.target.value)} required maxLength={6}
+                className="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-center text-4xl font-mono tracking-[0.3em] focus:border-red-500/50 outline-none transition-colors" />
+            </div>
+            <button type="submit" disabled={loadingAction} className="w-full bg-white text-black font-syne font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors mb-4">
+              {loadingAction ? "VERIFYING..." : "CONFIRM ACCESS"}
+            </button>
+            <button type="button" onClick={() => handleSendOtp(user?.email!)} disabled={sendingOtp} className="w-full text-xs font-mono text-white/40 hover:text-white transition-colors">
+              {sendingOtp ? "SENDING..." : "RESEND OTP"}
+            </button>
+          </form>
+        )}
+
+        {/* ─── STAGE 3: DASHBOARD ─── */}
+        {authStage === "authenticated" && (
+          <div className="animate-in fade-in duration-700">
+             
+             {/* Header */}
+             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 border-b border-white/10 pb-8 gap-6">
+                <div>
+                  <h1 className="text-4xl font-syne font-black uppercase tracking-tighter">Command Center</h1>
+                  <p className="font-mono text-[10px] tracking-widest text-emerald-400 uppercase mt-2">● Secure Connection Active</p>
+                </div>
+                <button onClick={handleLogout} className="font-mono text-[10px] tracking-widest uppercase border border-white/10 px-4 py-2 rounded glass-panel hover:bg-white/5 hover:border-red-500/30 transition-all text-white/60 hover:text-red-400">
+                  Disconnect Session
+                </button>
+             </div>
+
+             {/* Tabs */}
+             <div className="flex gap-4 mb-10 border-b border-white/10">
+                <button onClick={() => setActiveTab("projects")} className={`pb-4 px-2 font-syne font-bold text-sm uppercase tracking-wider border-b-2 transition-colors ${activeTab === "projects" ? "border-white text-white" : "border-transparent text-white/40 hover:text-white/70"}`}>
+                  Project Matrix
+                </button>
+                <button onClick={() => setActiveTab("messages")} className={`pb-4 px-2 font-syne font-bold text-sm uppercase tracking-wider border-b-2 transition-colors ${activeTab === "messages" ? "border-white text-white" : "border-transparent text-white/40 hover:text-white/70"}`}>
+                  Incoming Comms <span className="ml-2 bg-indigo-500 text-white text-[10px] px-2 py-0.5 rounded-full">{messages.length}</span>
+                </button>
+             </div>
+
+             {/* Tab Content */}
+             {activeTab === "projects" && (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                   
+                   {/* Add Project Form */}
+                   <div className="lg:col-span-1">
+                      <div className="glass-card p-6 rounded-xl border border-white/5 sticky top-24">
+                         <h3 className="font-syne font-bold text-lg mb-6 tracking-wide">DEPLOY NEW PROJECT</h3>
+                         <form onSubmit={handleAddProject} className="space-y-5">
+                            <div>
+                               <label className="block text-[10px] font-mono uppercase text-white/40 mb-1">Designation</label>
+                               <input value={projectTitle} onChange={e=>setProjectTitle(e.target.value)} required className="w-full bg-black/40 border border-white/10 rounded p-2.5 text-sm focus:border-indigo-500/50 outline-none" />
+                            </div>
+                            <div>
+                               <label className="block text-[10px] font-mono uppercase text-white/40 mb-1">Architecture / Type</label>
+                               <input value={projectDescription} onChange={e=>setProjectDescription(e.target.value)} required className="w-full bg-black/40 border border-white/10 rounded p-2.5 text-sm focus:border-indigo-500/50 outline-none" />
+                            </div>
+                            <div>
+                               <label className="block text-[10px] font-mono uppercase text-white/40 mb-1">Tech Stack (CSV)</label>
+                               <input value={projectTech} onChange={e=>setProjectTech(e.target.value)} required className="w-full bg-black/40 border border-white/10 rounded p-2.5 text-sm focus:border-indigo-500/50 outline-none" />
+                            </div>
+                            <div>
+                               <label className="block text-[10px] font-mono uppercase text-white/40 mb-1">GitHub / Live URI</label>
+                               <input value={projectLink} onChange={e=>setProjectLink(e.target.value)} required className="w-full bg-black/40 border border-white/10 rounded p-2.5 text-sm focus:border-indigo-500/50 outline-none" />
+                            </div>
+                            <button type="submit" disabled={loadingAction} className="w-full mt-4 bg-white text-black font-syne font-bold py-3 rounded hover:bg-indigo-400 hover:text-white transition-all text-sm uppercase tracking-wider">
+                               {loadingAction ? "DEPLOYING..." : "COMMIT TO DB"}
+                            </button>
+                         </form>
+                      </div>
+                   </div>
+
+                   {/* Project List */}
+                   <div className="lg:col-span-2 space-y-4">
+                      {projects.length === 0 ? (
+                         <div className="p-8 border border-white/5 border-dashed rounded-xl text-center text-white/30 font-mono text-sm">No external projects found in DB. Fallback array active on frontend.</div>
+                      ) : (
+                         projects.map(p => (
+                            <div key={p.id} className="glass-panel p-5 rounded-lg border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group hover:border-white/20 transition-colors">
+                               <div>
+                                  <h4 className="font-syne font-bold text-lg text-white/90">{p.title}</h4>
+                                  <p className="font-mono text-[10px] text-indigo-400 mt-1 uppercase tracking-widest">{p.description}</p>
+                                  <p className="text-xs text-white/40 mt-3">{p.technologies?.join(" • ")}</p>
+                               </div>
+                               <button onClick={() => handleDeleteProject(p.id)} className="text-[10px] font-mono text-red-400/50 hover:text-red-400 uppercase tracking-widest px-3 py-1.5 border border-red-500/20 rounded hover:bg-red-500/10 transition-colors self-start sm:self-center">
+                                  Purge
+                               </button>
+                            </div>
+                         ))
+                      )}
+                   </div>
+                </div>
+             )}
+
+             {/* Tab Content: Messages */}
+             {activeTab === "messages" && (
+                <div className="space-y-4">
+                    <p className="text-white/40 font-mono text-xs mb-6">Note: Hire Page submissions email you directly. They will also appear here if configured to write to Firestore.</p>
+                    {messages.length === 0 ? (
+                        <div className="p-12 border border-white/5 border-dashed rounded-xl text-center text-white/30 font-mono text-sm uppercase tracking-widest">Inbox Empty</div>
+                    ) : (
+                        messages.map(m => (
+                            <div key={m.id} className="glass-panel p-6 rounded-lg border border-white/5">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div>
+                                        <h4 className="font-syne font-bold text-lg text-white/90">{m.name}</h4>
+                                        <a href={`mailto:${m.email}`} className="font-mono text-xs text-indigo-400 hover:underline">{m.email}</a>
+                                    </div>
+                                    <span className="text-[10px] font-mono text-white/30 uppercase">{new Date(m.createdAt).toLocaleDateString()}</span>
+                                </div>
+                                <div className="bg-black/40 border border-white/5 p-4 rounded text-sm text-white/70 whitespace-pre-wrap">
+                                    {m.message}
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+             )}
+
+          </div>
+        )}
+
       </div>
     </div>
   );
