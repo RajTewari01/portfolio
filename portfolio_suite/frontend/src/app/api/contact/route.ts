@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { collection, addDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db } from "../../lib/firebase";
 
 export async function POST(req: NextRequest) {
   try {
