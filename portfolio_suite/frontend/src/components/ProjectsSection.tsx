@@ -1,12 +1,21 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const projects = [
+interface Project {
+  id: string;
+  title: string;
+  type: string;
+  desc: string;
+  link: string;
+}
+
+// ─── Hardcoded fallback projects (always shown) ───
+const fallbackProjects: Project[] = [
   {
     id: "01",
     title: "Spatial Tracer",
@@ -30,11 +39,46 @@ const projects = [
   },
 ];
 
+
 export default function ProjectsSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLHeadingElement>(null);
+  const [dynamicProjects, setDynamicProjects] = useState<Project[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
+  // ─── Fetch projects from Firestore ───
   useEffect(() => {
+    (async () => {
+      try {
+        const { getDocs, collection, orderBy, query } = await import("firebase/firestore");
+        const { db } = await import("@/lib/firebase");
+        const snap = await getDocs(query(collection(db, "projects"), orderBy("createdAt", "desc")));
+        const firestoreProjects: Project[] = snap.docs.map((d, i) => {
+          const data = d.data();
+          return {
+            id: String(fallbackProjects.length + i + 1).padStart(2, "0"),
+            title: data.title || "Untitled",
+            type: data.type || data.description || "Project",
+            desc: data.description || "",
+            link: data.link || "#",
+          };
+        });
+        setDynamicProjects(firestoreProjects);
+      } catch (err) {
+        console.warn("Firestore fetch failed, using fallback only:", err);
+      } finally {
+        setLoaded(true);
+      }
+    })();
+  }, []);
+
+  // Merge: hardcoded first, then Firestore projects
+  const allProjects = [...fallbackProjects, ...dynamicProjects];
+
+  // ─── GSAP Animations (re-run when projects load) ───
+  useEffect(() => {
+    if (!loaded) return;
+
     const ctx = gsap.context(() => {
       // ─── Header: Scroll-driven scale + opacity ───
       if (headerRef.current) {
@@ -89,7 +133,7 @@ export default function ProjectsSection() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [loaded, allProjects.length]);
 
   return (
     <section id="work" className="relative section-pad-y" ref={sectionRef}>
@@ -120,7 +164,7 @@ export default function ProjectsSection() {
 
         {/* ─── Project List ─── */}
         <div className="w-full flex flex-col" style={{ perspective: "1200px" }}>
-          {projects.map((p) => (
+          {allProjects.map((p) => (
             <a 
               key={p.id}
               href={p.link}

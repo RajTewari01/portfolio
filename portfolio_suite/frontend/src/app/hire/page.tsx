@@ -75,17 +75,18 @@ export default function HirePage() {
 
       <main ref={containerRef} className="relative z-10 min-h-screen pt-32 pb-24 section-pad-x flex flex-col items-center justify-center">
         
-        <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 origin-center">
+        <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 origin-center">
           
           {/* ─── Left: Copy & Links ─── */}
-          <div className="lg:col-span-5 flex flex-col justify-center">
+          <div className="flex flex-col justify-center">
             <div className="flex items-center gap-3 mb-6 hire-stagger">
               <div className="w-1.5 h-1.5 bg-cyan-400 glow-pulse" />
               <p className="font-mono text-[10px] tracking-[0.3em] uppercase text-white/40">Secure Channel</p>
             </div>
             
-            <h1 className="hire-stagger font-syne text-5xl sm:text-6xl font-black uppercase tracking-tighter leading-[0.9] text-white" style={{ textShadow: "0 10px 40px rgba(0,0,0,0.8)" }}>
-              Let&apos;s Build <br/>
+            <h1 className="hire-stagger font-syne text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-[0.9] text-white" style={{ textShadow: "0 10px 40px rgba(0,0,0,0.8)" }}>
+              Let&apos;s <br/>
+              Build <br/>
               <span className="gradient-text-accent">Something</span><br/>
               Incredible.
             </h1>
@@ -136,7 +137,7 @@ export default function HirePage() {
           </div>
 
           {/* ─── Right: Contact Form ─── */}
-          <div className="hire-stagger lg:col-span-6 lg:col-start-7 relative mt-12 lg:mt-0">
+          <div className="hire-stagger relative mt-12 lg:mt-0">
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-cyan-500/5 to-transparent rounded-3xl blur-2xl" />
             <form onSubmit={handleSubmit} className="relative p-6 sm:p-8 rounded-3xl flex flex-col gap-6 w-full border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] bg-black/70 backdrop-blur-xl">
               

@@ -21,6 +21,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: auto;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
   }
 
   body {
@@ -28,6 +30,8 @@
     color: white;
     background: black;
     overflow-x: hidden;
+    overscroll-behavior-x: none;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Subtle noise grain overlay for cinematic depth */

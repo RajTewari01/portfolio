@@ -29,9 +29,16 @@ export default function Navbar() {
         transition={{ duration: 1, delay: 0.3, ease: "circOut" }}
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ${
           scrolled
-            ? "py-3 glass-panel border-b-0"
+            ? "py-3"
             : "py-5 bg-transparent"
         }`}
+        style={scrolled ? {
+          background: "rgba(0, 0, 0, 0.6)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          borderBottom: "none",
+          boxShadow: "0 4px 30px rgba(0, 0, 0, 0.3)",
+        } : undefined}
       >
         {/* Glowing top border on scroll */}
         <div 

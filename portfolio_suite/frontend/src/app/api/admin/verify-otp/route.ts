@@ -3,10 +3,15 @@ import jwt from "jsonwebtoken";
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, otp } = await req.json();
+    const { email, otp, pin } = await req.json();
 
-    if (!email || !otp) {
-      return NextResponse.json({ error: "Email and OTP are required." }, { status: 400 });
+    if (!email || !otp || !pin) {
+      return NextResponse.json({ error: "Email, OTP, and Admin PIN are required." }, { status: 400 });
+    }
+
+    // --- Factor 3: Secret PIN Verification ---
+    if (pin !== process.env.ADMIN_PIN) {
+      return NextResponse.json({ error: "Invalid Admin PIN. Access denied." }, { status: 401 });
     }
 
     // Try to get OTP from global store (for local dev) or local import

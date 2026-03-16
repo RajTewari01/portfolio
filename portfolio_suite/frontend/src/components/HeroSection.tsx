@@ -218,12 +218,16 @@ export default function HeroSection() {
             </a>
           ))}
           
-          <a href="/hire" className="flex items-center justify-center h-10 px-6 rounded-full bg-white/80 backdrop-blur-sm text-black hover:bg-indigo-500 hover:text-white hover:scale-105 hover:shadow-[0_0_25px_rgba(99,102,241,0.4)] transition-all duration-300 font-syne font-black text-xs uppercase tracking-wider">
+          <a href="/hire" className="flex items-center justify-center h-10 px-6 rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 hover:scale-105 hover:border-white/40 hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] transition-all duration-300 font-syne font-bold text-xs uppercase tracking-wider">
              🚀 Hire Me
           </a>
 
-          <a href="https://www.buymeacoffee.com/biswadeep" target="_blank" rel="noreferrer" className="flex items-center justify-center h-10 px-5 rounded-full border border-[#FFDD00]/20 bg-black/40 backdrop-blur-md text-[#FFDD00]/90 hover:bg-[#FFDD00] hover:text-black hover:border-[#FFDD00] hover:scale-105 hover:shadow-[0_0_25px_rgba(255,221,0,0.2)] transition-all duration-300 font-syne font-bold text-xs uppercase tracking-wider">
-             ☕ Buy Me a Coffee
+          <a href="/biswadeep_tewari_cv_placeholder.pdf" download="Biswadeep_Tewari_CV.pdf" className="flex items-center justify-center h-10 px-6 rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 hover:scale-105 hover:border-white/40 hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] transition-all duration-300 font-syne font-bold text-xs uppercase tracking-wider">
+             ⬇ Download CV
+          </a>
+
+          <a href="https://www.buymeacoffee.com/biswadeep" target="_blank" rel="noreferrer" className="flex items-center justify-center h-10 px-6 rounded-full border border-[#FFDD00]/30 bg-[#FFDD00]/10 backdrop-blur-md text-[#FFDD00] hover:bg-[#FFDD00]/20 hover:scale-105 hover:border-[#FFDD00]/50 hover:shadow-[0_0_25px_rgba(255,221,0,0.3)] transition-all duration-300 font-syne font-bold text-xs uppercase tracking-wider">
+             ☕ Fund The Build
           </a>
         </motion.div>
       </div>
