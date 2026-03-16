@@ -51,7 +51,7 @@ export default function ProjectsSection() {
     (async () => {
       try {
         const { getDocs, collection, orderBy, query } = await import("firebase/firestore");
-        const { db } = await import("@/lib/firebase");
+        const { db } = await import("../lib/firebase");
         const snap = await getDocs(query(collection(db, "projects"), orderBy("createdAt", "desc")));
         const firestoreProjects: Project[] = snap.docs.map((d, i) => {
           const data = d.data();

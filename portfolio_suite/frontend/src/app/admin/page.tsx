@@ -53,7 +53,7 @@ export default function AdminPage() {
     
     (async () => {
       const { onAuthStateChanged } = await import("firebase/auth");
-      const { auth } = await import("@/lib/firebase");
+      const { auth } = await import("../../lib/firebase");
       unsubscribe = onAuthStateChanged(auth, (currentUser: User | null) => {
         setUser(currentUser);
         setCheckingAuth(false);
@@ -77,7 +77,7 @@ export default function AdminPage() {
 
   const fetchData = async () => {
     try {
-      const { db } = await import("@/lib/firebase");
+      const { db } = await import("../../lib/firebase");
       
       // Fetch Projects
       const projSnap = await getDocs(collection(db, "projects"));
@@ -99,7 +99,7 @@ export default function AdminPage() {
     setLoadingAction(true);
     try {
       const { signInWithPopup, GoogleAuthProvider, signOut } = await import("firebase/auth");
-      const { auth } = await import("@/lib/firebase");
+      const { auth } = await import("../../lib/firebase");
       
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
@@ -122,7 +122,7 @@ export default function AdminPage() {
     setLoadingAction(true);
     try {
       const { signInWithEmailAndPassword, signOut } = await import("firebase/auth");
-      const { auth } = await import("@/lib/firebase");
+      const { auth } = await import("../../lib/firebase");
       const result = await signInWithEmailAndPassword(auth, email, password);
       
       if (!result.user.email || !ALLOWED_EMAILS.includes(result.user.email)) {
@@ -182,7 +182,7 @@ export default function AdminPage() {
 
   const handleLogout = async () => {
     const { signOut } = await import("firebase/auth");
-    const { auth } = await import("@/lib/firebase");
+    const { auth } = await import("../../lib/firebase");
     localStorage.removeItem("admin_session_token");
     setSessionToken(null);
     setAuthStage("login");
@@ -194,7 +194,7 @@ export default function AdminPage() {
     e.preventDefault();
     setLoadingAction(true);
     try {
-      const { db } = await import("@/lib/firebase");
+      const { db } = await import("../../lib/firebase");
       await addDoc(collection(db, "projects"), {
         title: projectTitle,
         type: projectType,
@@ -221,7 +221,7 @@ export default function AdminPage() {
   const handleDeleteProject = async (id: string) => {
     if (!confirm("Delete this project?")) return;
     try {
-      const { db } = await import("@/lib/firebase");
+      const { db } = await import("../../lib/firebase");
       await deleteDoc(doc(db, "projects", id));
       fetchData();
     } catch (err) {
