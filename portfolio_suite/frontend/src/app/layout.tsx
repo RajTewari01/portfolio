@@ -25,6 +25,9 @@ const syne = Syne({
 export const metadata: Metadata = {
   title: "Biswadeep Tewari — Digital Nexus",
   description: "Portfolio of Biswadeep Tewari. Full-Stack Engineer, AI/ML Architect, and Mobile Developer. Engineering the impossible.",
+  verification: {
+    google: 'uro1j8pmJ9uk40HfXpBeaA_PmA3S6m3_APoDspkCRJQ',
+  },
 };
 
 export default function RootLayout({
@@ -36,7 +39,7 @@ export default function RootLayout({
     <html lang="en" className="bg-black">
       <body className={`${spaceGrotesk.variable} ${syne.variable} antialiased bg-black text-white selection:bg-indigo-500/30 selection:text-indigo-200 overflow-x-hidden`}>
         {/* Subtle noise grain for texture */}
-        <div className="fixed inset-0 pointer-events-none z-[100] opacity-[0.03] mix-blend-overlay bg-[url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Dissolve_Noise_Texture.png')] bg-repeat" />
+        <div className="fixed inset-0 pointer-events-none z-[100] opacity-[0.03] mix-blend-overlay bg-[url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Dissolve_Noise_Texture.png')] bg-[...]
         {children}
       </body>
     </html>
